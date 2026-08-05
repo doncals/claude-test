@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Three quick questions to decide where our date takes us.">
+<meta name="theme-color" content="#fbf8f3" id="themeColorMeta">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta property="og:title" content="Let's Plan Our Date">
+<meta property="og:description" content="Three quick questions and I'll take it from there.">
+<title>Let's Plan Our Date</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf8f3;
+    --card: #ffffff;
+    --border: rgba(20,16,8,0.06);
+    --text: #221d16;
+    --muted: #928b7c;
+    --track: #eee9df;
+    --ghost-bg: #f3f0e9;
+    --ghost-bg-active: #eae6db;
+    --ghost-text: #6b6558;
+    --radius-lg: 30px;
+    --radius-md: 22px;
+  }
+
+  html.dark {
+    --bg: #15130f;
+    --card: #201d18;
+    --border: rgba(255,255,255,0.08);
+    --text: #f5f0e7;
+    --muted: #a79d8c;
+    --track: #2c2822;
+    --ghost-bg: #2a261f;
+    --ghost-bg-active: #343027;
+    --ghost-text: #cabfab;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: contain;
+    position: relative;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, background-color 0.5s ease;
+  }
+
+  html.dark .blob { opacity: 0.16; }
+
+  .blob-a {
+    width: 320px;
+    height: 320px;
+    top: -110px;
+    left: -110px;
+    background: #ffd9be;
+  }
+
+  html.dark .blob-a { background: #6b3f22; }
+
+  .blob-b {
+    width: 280px;
+    height: 280px;
+    bottom: -90px;
+    right: -100px;
+    background: #cfe8fb;
+  }
+
+  html.dark .blob-b { background: #1f3f56; }
+
+  .blob-c {
+    width: 220px;
+    height: 220px;
+    top: 40%;
+    right: -110px;
+    background: #ece0fb;
+  }
+
+  html.dark .blob-c { background: #3a2b57; }
+
+  main {
+    width: 100%;
+    max-width: 460px;
+    padding: 0 18px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .appbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 18px);
+    padding-bottom: 14px;
+    z-index: 5;
+  }
+
+  .appbar-top {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+  }
+
+  .back-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 14px -8px rgba(20,16,8,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), background-color 0.4s ease, opacity 0.2s ease;
+  }
+
+  .back-btn:active { transform: scale(0.88); }
+
+  .back-btn[hidden] {
+    display: flex;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .back-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--text);
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--track);
+    border-radius: 999px;
+    overflow: hidden;
+    transition: background-color 0.4s ease;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffab7a, #ff6b4a);
+    transition: width 0.45s cubic-bezier(.22,1,.36,1), background 0.3s ease;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .card-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+    perspective: 1200px;
+  }
+
+  .card {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px 18px 22px;
+    box-shadow: 0 20px 50px -30px rgba(30,20,10,0.35);
+    transition: background-color 0.5s ease, border-color 0.5s ease,
+      transform 0.22s cubic-bezier(.4,0,1,1), opacity 0.22s ease;
+    transform-origin: center bottom;
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+    --mx: 50%;
+    --my: 0%;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.55), transparent 55%);
+    opacity: 0.6;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  html.dark .card::before {
+    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.16), transparent 55%);
+    mix-blend-mode: overlay;
+  }
+
+  .card.is-landing {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .card.is-landing::before {
+    display: none;
+  }
+
+  .card.card-exit-forward { transform: scale(0.88) rotate(-5deg) translateY(6px); opacity: 0; }
+  .card.card-exit-back { transform: scale(0.88) rotate(5deg) translateY(6px); opacity: 0; }
+
+  .card.anim-forward { animation: cardInForward 0.46s cubic-bezier(.22,1.36,.36,1); }
+  .card.anim-back { animation: cardInBack 0.46s cubic-bezier(.22,1.36,.36,1); }
+
+  @keyframes cardInForward {
+    from { opacity: 0; transform: scale(0.9) rotate(4deg) translateY(18px); }
+    to { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+  }
+
+  @keyframes cardInBack {
+    from { opacity: 0; transform: scale(0.9) rotate(-4deg) translateY(18px); }
+    to { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+  }
+
+  .cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+    background: var(--c-bg, #f1ede4);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .cover-emoji {
+    font-size: 3.6rem;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.08));
+    transition: transform 0.4s cubic-bezier(.22,1.4,.36,1);
+  }
+
+  .cover-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    font-size: 0.64rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--c-text, #6b6558);
+    background: rgba(255,255,255,0.65);
+    padding: 3px 9px;
+    border-radius: 999px;
+    opacity: 0.7;
+  }
+
+  html.dark .cover-hint {
+    background: rgba(0,0,0,0.4);
+  }
+
+  .cover.has-sketch .cover-emoji,
+  .cover.has-sketch .cover-hint {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.36rem;
+    line-height: 1.35;
+    margin: 0 0 18px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .choice {
+    aspect-ratio: 1 / 1;
+    border: none;
+    border-radius: 22px;
+    background: var(--c-bg, #f1ede4);
+    color: var(--c-text, #221d16);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: 0 6px 14px -10px rgba(20,16,8,0.22);
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease, opacity 0.18s ease;
+    position: relative;
+    overflow: hidden;
+    --mx: 50%;
+    --my: 15%;
+  }
+
+  .choice::after,
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 15%), rgba(255,255,255,0.6), transparent 60%);
+    opacity: 0.55;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+  }
+
+  .choice:active { transform: scale(0.93); }
+
+  .choice.choice-selected {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px var(--c-text, #221d16), 0 10px 20px -12px rgba(20,16,8,0.25);
+  }
+
+  .choice.choice-dim {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+
+  @media (hover: hover) {
+    .choice:hover { transform: translateY(-3px); box-shadow: 0 10px 18px -12px rgba(20,16,8,0.2); }
+  }
+
+  .choice-emoji { font-size: 2.3rem; line-height: 1; }
+  .choice-label { text-align: center; padding: 0 6px; }
+
+  .landing-title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    text-align: center;
+  }
+
+  .landing-subtitle {
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--muted);
+    text-align: center;
+    margin: 0 0 24px;
+  }
+
+  .outcome-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin: 0 0 10px;
+  }
+
+  .outcome-blurb {
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 22px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    min-height: 52px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff8a65, #ff6b4a);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 14px 26px -12px rgba(255,107,74,0.55);
+    transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s ease;
+    touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
+    --mx: 50%;
+    --my: 15%;
+  }
+
+  .btn-primary:active { transform: scale(0.97); }
+
+  @media (hover: hover) {
+    .btn-primary:hover { transform: translateY(-1px); }
+  }
+
+  .btn-ghost {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 999px;
+    background: var(--ghost-bg);
+    color: var(--ghost-text);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+    touch-action: manipulation;
+  }
+
+  .btn-ghost:active { transform: scale(0.97); background: var(--ghost-bg-active); }
+
+  .footer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .secondary-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 2px;
+  }
+
+  .secondary-row .btn-ghost {
+    flex: 1;
+  }
+
+  .suggest-panel {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: cardInForward 0.32s cubic-bezier(.22,1.36,.36,1);
+  }
+
+  .suggest-textarea {
+    width: 100%;
+    min-height: 76px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--ghost-bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.92rem;
+    padding: 12px 14px;
+    resize: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .suggest-textarea:focus {
+    outline: none;
+    border-color: var(--c-accent, #ff7a45);
+  }
+
+  .suggest-status {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-align: center;
+    min-height: 1.1em;
+  }
+
+  .suggest-status.success { color: #2fae6c; }
+  .suggest-status.error { color: #e0526a; }
+
+  .landing-actions { margin-top: 4px; }
+
+  @media (max-width: 380px) {
+    .card { padding: 14px 14px 18px; }
+    h1 { font-size: 1.22rem; }
+    .cover-emoji { font-size: 3.1rem; }
+    .choice-emoji { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-a"></div>
+<div class="blob blob-b"></div>
+<div class="blob blob-c"></div>
+
+<main>
+  <div class="appbar" id="appbar" style="visibility:hidden">
+    <div class="appbar-top">
+      <button class="back-btn" id="backBtn" hidden aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="progress-track" id="progressTrack">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="card" id="card"></div>
+  </div>
+</main>
+
+<div class="sr-only" id="liveRegion" aria-live="polite"></div>
+
+<script>
+  const TOTAL_QUESTIONS = 3;
+  const SELECT_DELAY = 240;
+  const EXIT_DURATION = 200;
+  const SWIPE_THRESHOLD = 90;
+  const SUGGESTION_ENDPOINT = 'https://formspree.io/f/xvkppeqn';
+
+  const PALETTE = {
+    amber: { light: { bg: '#fff4d6', text: '#8a5a00' }, dark: { bg: '#3d2e0a', text: '#ffd479' }, accent: '#f5a623', accentSoft: '#ffcf6b' },
+    sky:   { light: { bg: '#dceefb', text: '#0b5a8a' }, dark: { bg: '#12293b', text: '#7ec4f5' }, accent: '#3b9ae1', accentSoft: '#7ec8f5' },
+    mint:  { light: { bg: '#dff5e9', text: '#0f6b45' }, dark: { bg: '#123626', text: '#7be0ab' }, accent: '#2fae6c', accentSoft: '#7be0ab' },
+    lilac: { light: { bg: '#ece3fb', text: '#5b3b9e' }, dark: { bg: '#2a2044', text: '#c3a8f7' }, accent: '#8b5cf6', accentSoft: '#b79bfa' },
+    blush: { light: { bg: '#fce3ec', text: '#9e2f5c' }, dark: { bg: '#3a1f2b', text: '#f5a0c1' }, accent: '#f0629b', accentSoft: '#f7a0c3' },
+    peach: { light: { bg: '#ffe3d6', text: '#9e4620' }, dark: { bg: '#3a2416', text: '#ffb38a' }, accent: '#ff7a45', accentSoft: '#ffab7a' },
+    teal:  { light: { bg: '#d9f5f0', text: '#0e6e60' }, dark: { bg: '#0f3630', text: '#7de3d1' }, accent: '#22b8a2', accentSoft: '#7de3d1' }
+  };
+
+  const RANDOM_POOL = [
+    { name: 'Befriend the bison @ GGP', blurb: 'I just know they want us to pet them.', emoji: '🦬', color: 'amber' },
+    { name: 'Jazz night @ Mercury Cafe', blurb: 'Where else would 2 Hayes Valley girls be on a Thursday evening?', emoji: '🎷', color: 'sky' },
+    { name: 'Walk to the windmills @ GGP', blurb: "We can see BOTH in 1 walk. Isn't that exciting?", emoji: '🚶‍♀️', color: 'mint' },
+    { name: 'Coffee date @ Coffee Movement', blurb: 'Simply the best.', emoji: '☕️', color: 'lilac' },
+    { name: 'Pick out books @ Dog Eared Books', blurb: 'We can be soooo smart together.', emoji: '📚', color: 'blush' },
+    { name: 'Coffee and pastries @ Tartine', blurb: 'A SF fave.', emoji: '🥐', color: 'peach' },
+    { name: 'Fishing', blurb: "Let's prep for your dream of catching fish and making sushi.", emoji: '🎣', color: 'teal' },
+    { name: 'Pretend to be cowboys @ Horsies Market', blurb: "I don't know if I'll be able to handle you in a cowboy hat.", emoji: '🤠', color: 'amber' },
+    { name: "Brunch @ Chloe's", blurb: "Life changing pancakes. I don't even really like pancakes.", emoji: '🥞', color: 'sky' },
+    { name: 'Bike ride', blurb: 'You might have an electric bike but I would beat you in a race.', emoji: '🚲', color: 'mint' }
+  ];
+
+  const TREE = {
+    landing: {
+      type: 'landing',
+      title: "Let's plan our date.",
+      subtitle: "Three quick questions — I'll take it from there.",
+      sketch: 'sketches/landing',
+      color: 'peach',
+      emoji: '💌',
+      next: 'day_or_night'
+    },
+    day_or_night: {
+      type: 'question',
+      depth: 1,
+      branch: null,
+      text: 'Day, or night?',
+      sketch: 'sketches/day-or-night',
+      color: 'amber',
+      emoji: '🌗',
+      options: [
+        { label: 'Day', emoji: '☀️', color: 'amber', next: 'indoor_or_outdoor' },
+        { label: 'Night', emoji: '🌙', color: 'lilac', next: 'drinks_or_dinner' }
+      ]
+    },
+    indoor_or_outdoor: {
+      type: 'question',
+      depth: 2,
+      branch: 'day',
+      text: 'Indoor, or outdoor?',
+      sketch: 'sketches/indoor-or-outdoor',
+      color: 'mint',
+      emoji: '🏡',
+      options: [
+        { label: 'Indoor', emoji: '🛋️', color: 'peach', next: 'go_out_or_in' },
+        { label: 'Outdoor', emoji: '🌳', color: 'mint', next: 'moving_or_hanging' }
+      ]
+    },
+    drinks_or_dinner: {
+      type: 'question',
+      depth: 2,
+      branch: 'night',
+      text: 'Drinks, or dinner?',
+      sketch: 'sketches/drinks-or-dinner',
+      color: 'blush',
+      emoji: '🍽️',
+      options: [
+        { label: 'Drinks', emoji: '🍸', color: 'blush', next: 'pool_or_watch' },
+        { label: 'Dinner', emoji: '🍽️', color: 'sky', next: 'sf_or_france' }
+      ]
+    },
+    go_out_or_in: {
+      type: 'question',
+      depth: 3,
+      branch: 'day',
+      text: 'Go out, or stay in?',
+      sketch: 'sketches/go-out-or-in',
+      color: 'peach',
+      emoji: '🚪',
+      options: [
+        { label: 'Out', emoji: '🪩', color: 'peach', next: 'outcome_coffee' },
+        { label: 'In', emoji: '🏡', color: 'amber', next: 'outcome_vinyl' }
+      ]
+    },
+    moving_or_hanging: {
+      type: 'question',
+      depth: 3,
+      branch: 'day',
+      text: 'Moving, or hanging out?',
+      sketch: 'sketches/moving-or-hanging',
+      color: 'mint',
+      emoji: '🥾',
+      options: [
+        { label: 'Moving', emoji: '🥾', color: 'mint', next: 'outcome_lands_end' },
+        { label: 'Hanging out', emoji: '🧺', color: 'teal', next: 'outcome_mt_tam' }
+      ]
+    },
+    pool_or_watch: {
+      type: 'question',
+      depth: 3,
+      branch: 'night',
+      text: "People-watch, or let me beat you at pool?",
+      sketch: 'sketches/pool-or-watch',
+      color: 'sky',
+      emoji: '🎱',
+      options: [
+        { label: 'People watch', emoji: '👀', color: 'lilac', next: 'outcome_trick_dog' },
+        { label: 'Pool', emoji: '🎱', color: 'sky', next: 'outcome_peacekeeper' }
+      ]
+    },
+    sf_or_france: {
+      type: 'question',
+      depth: 3,
+      branch: 'night',
+      text: "SF classic, or pretend we're in France?",
+      sketch: 'sketches/sf-or-france',
+      color: 'lilac',
+      emoji: '🗼',
+      options: [
+        { label: 'San Francisco', emoji: '🌉', color: 'blush', next: 'outcome_side_a' },
+        { label: 'France', emoji: '🇫🇷', color: 'sky', next: 'outcome_verjus' }
+      ]
+    },
+    outcome_coffee: {
+      type: 'outcome',
+      branch: 'day',
+      name: 'Coffee at Loquat',
+      blurb: 'A quiet cup, unhurried mornings, and no reason to rush.',
+      sketch: 'sketches/outcome-coffee',
+      color: 'peach',
+      emoji: '☕'
+    },
+    outcome_vinyl: {
+      type: 'outcome',
+      branch: 'day',
+      name: 'Vinyl at Home',
+      blurb: 'Just us, a record spinning, and the whole day open.',
+      sketch: 'sketches/outcome-vinyl',
+      color: 'amber',
+      emoji: '🎵'
+    },
+    outcome_lands_end: {
+      type: 'outcome',
+      branch: 'day',
+      name: 'Walk at Lands End',
+      blurb: 'Cliffs, ocean air, and a trail that makes conversation easy.',
+      sketch: 'sketches/outcome-lands-end',
+      color: 'mint',
+      emoji: '🌊'
+    },
+    outcome_mt_tam: {
+      type: 'outcome',
+      branch: 'day',
+      name: 'Picnic at Mt Tam',
+      blurb: 'A blanket, a view, and the kind of talk that goes further than planned.',
+      sketch: 'sketches/outcome-mt-tam',
+      color: 'teal',
+      emoji: '🏔️'
+    },
+    outcome_peacekeeper: {
+      type: 'outcome',
+      branch: 'night',
+      name: 'Pool at Peacekeeper',
+      blurb: "Drinks, a little competition, and I probably won't go easy on you.",
+      sketch: 'sketches/outcome-peacekeeper',
+      color: 'sky',
+      emoji: '🎱'
+    },
+    outcome_trick_dog: {
+      type: 'outcome',
+      branch: 'night',
+      name: 'People-Watching at Trick Dog',
+      blurb: 'A good seat, a good drink, and plenty to notice together.',
+      sketch: 'sketches/outcome-trick-dog',
+      color: 'lilac',
+      emoji: '👀'
+    },
+    outcome_side_a: {
+      type: 'outcome',
+      branch: 'night',
+      name: 'Drinks & Music at Side A',
+      blurb: 'Classic SF energy — drinks, music, and a night that finds its own rhythm.',
+      sketch: 'sketches/outcome-side-a',
+      color: 'blush',
+      emoji: '🎶'
+    },
+    outcome_verjus: {
+      type: 'outcome',
+      branch: 'night',
+      name: 'Dinner at Verjus',
+      blurb: "Wine, a long table, and pretending — just for the night — that we're somewhere else.",
+      sketch: 'sketches/outcome-verjus',
+      color: 'sky',
+      emoji: '🍷'
+    }
+  };
+
+  const stack = ['landing'];
+  let lastDirection = 'forward';
+  let navLocked = false;
+
+  const htmlEl = document.documentElement;
+  const themeColorMeta = document.getElementById('themeColorMeta');
+  const card = document.getElementById('card');
+  const appbar = document.getElementById('appbar');
+  const progressTrack = document.getElementById('progressTrack');
+  const progressFill = document.getElementById('progressFill');
+  const backBtn = document.getElementById('backBtn');
+  const liveRegion = document.getElementById('liveRegion');
+
+  backBtn.addEventListener('click', () => transitionTo(() => stack.pop(), 'back'));
+
+  function updateSheen(el, clientX, clientY) {
+    const rect = el.getBoundingClientRect();
+    const mx = ((clientX - rect.left) / rect.width) * 100;
+    const my = ((clientY - rect.top) / rect.height) * 100;
+    el.style.setProperty('--mx', mx + '%');
+    el.style.setProperty('--my', my + '%');
+  }
+
+  let lightRAF = null;
+  function handleLightPointer(e) {
+    const point = e.touches ? e.touches[0] : e;
+    if (lightRAF) return;
+    lightRAF = requestAnimationFrame(() => {
+      lightRAF = null;
+      updateSheen(card, point.clientX, point.clientY);
+      const target = e.target.closest && e.target.closest('.choice, .btn-primary');
+      if (target) updateSheen(target, point.clientX, point.clientY);
+    });
+  }
+  card.addEventListener('pointermove', handleLightPointer);
+
+  let swipeState = null;
+
+  function onCardPointerDown(e) {
+    const node = TREE[stack[stack.length - 1]];
+    if (node.type !== 'question' || navLocked) return;
+    const choiceBtns = card.querySelectorAll('.choice');
+    if (choiceBtns.length !== 2) return;
+    swipeState = { startX: e.clientX, startY: e.clientY, dx: 0, node, choiceBtns, pointerId: e.pointerId };
+    card.style.transition = 'none';
+  }
+
+  function onCardPointerMove(e) {
+    if (!swipeState || e.pointerId !== swipeState.pointerId) return;
+    const dx = e.clientX - swipeState.startX;
+    const dy = e.clientY - swipeState.startY;
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+    if (Math.abs(dy) > Math.abs(dx) * 1.4) return;
+    swipeState.dx = dx;
+    card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+    const [leftBtn, rightBtn] = swipeState.choiceBtns;
+    const progress = Math.min(Math.abs(dx) / SWIPE_THRESHOLD, 1);
+    if (dx > 4) {
+      rightBtn.style.transform = `scale(${1 + progress * 0.08})`;
+      rightBtn.style.opacity = '1';
+      leftBtn.style.opacity = String(1 - progress * 0.55);
+      leftBtn.style.transform = '';
+    } else if (dx < -4) {
+      leftBtn.style.transform = `scale(${1 + progress * 0.08})`;
+      leftBtn.style.opacity = '1';
+      rightBtn.style.opacity = String(1 - progress * 0.55);
+      rightBtn.style.transform = '';
+    }
+  }
+
+  function resetSwipeStyles(choiceBtns) {
+    card.style.transform = '';
+    choiceBtns.forEach(b => { b.style.opacity = ''; b.style.transform = ''; });
+  }
+
+  function onCardPointerUp(e) {
+    if (!swipeState || e.pointerId !== swipeState.pointerId) return;
+    const { dx, node, choiceBtns } = swipeState;
+    card.style.transition = '';
+    swipeState = null;
+    if (Math.abs(dx) > SWIPE_THRESHOLD) {
+      card.style.transform = '';
+      const [leftBtn, rightBtn] = choiceBtns;
+      selectChoice(node, dx > 0 ? rightBtn : leftBtn, choiceBtns);
+    } else {
+      resetSwipeStyles(choiceBtns);
+    }
+  }
+
+  card.addEventListener('pointerdown', onCardPointerDown);
+  card.addEventListener('pointermove', onCardPointerMove);
+  card.addEventListener('pointerup', onCardPointerUp);
+  card.addEventListener('pointercancel', onCardPointerUp);
+
+  let isDarkMode = false;
+
+  function styleAttr(colorKey) {
+    const p = PALETTE[colorKey] || PALETTE.peach;
+    const variant = isDarkMode ? p.dark : p.light;
+    return `--c-bg:${variant.bg};--c-text:${variant.text};--c-accent:${p.accent}`;
+  }
+
+  function setTheme(dark) {
+    isDarkMode = dark;
+    htmlEl.classList.toggle('dark', dark);
+    themeColorMeta.setAttribute('content', dark ? '#15130f' : '#fbf8f3');
+  }
+
+  function updateChrome(node) {
+    if (node.type === 'landing') {
+      appbar.style.visibility = 'hidden';
+      return;
+    }
+    appbar.style.visibility = 'visible';
+    backBtn.hidden = stack.length <= 1;
+    const depth = node.type === 'outcome' ? TOTAL_QUESTIONS : node.depth;
+    const pct = (depth / TOTAL_QUESTIONS) * 100;
+    const palette = PALETTE[node.color] || PALETTE.peach;
+    progressFill.style.width = pct + '%';
+    progressFill.style.background = `linear-gradient(90deg, ${palette.accentSoft}, ${palette.accent})`;
+    liveRegion.textContent = node.type === 'outcome'
+      ? 'Result: ' + node.name
+      : 'Question ' + depth + ' of ' + TOTAL_QUESTIONS + ': ' + node.text;
+  }
+
+  function loadSketch(el, basePath) {
+    const exts = ['png', 'jpg', 'jpeg', 'svg'];
+    let i = 0;
+    function tryNext() {
+      if (i >= exts.length) return;
+      const src = basePath + '.' + exts[i];
+      const img = new Image();
+      img.onload = () => {
+        el.style.backgroundImage = `url("${src}")`;
+        el.classList.add('has-sketch');
+      };
+      img.onerror = () => { i++; tryNext(); };
+      img.src = src;
+    }
+    tryNext();
+  }
+
+  function coverHtml(sketch, color, emoji) {
+    const filename = sketch.split('/').pop();
+    return `
+      <div class="cover" data-sketch="${sketch}" style="${styleAttr(color)}">
+        <div class="cover-emoji">${emoji}</div>
+        <span class="cover-hint">${filename}.png</span>
+      </div>
+    `;
+  }
+
+  function mountSketches(root) {
+    root.querySelectorAll('.cover[data-sketch]').forEach(el => {
+      loadSketch(el, el.dataset.sketch);
+    });
+  }
+
+  function render() {
+    const nodeId = stack[stack.length - 1];
+    const node = TREE[nodeId];
+    navLocked = false;
+    setTheme(node.branch === 'night');
+    card.classList.toggle('is-landing', node.type === 'landing');
+    if (node.type === 'landing') renderLanding(node);
+    else if (node.type === 'question') renderQuestion(node);
+    else renderOutcome(node);
+    updateChrome(node);
+    mountSketches(card);
+    card.classList.remove('anim-forward', 'anim-back');
+    void card.offsetWidth;
+    card.classList.add(lastDirection === 'forward' ? 'anim-forward' : 'anim-back');
+  }
+
+  function transitionTo(mutateStack, direction) {
+    if (navLocked) return;
+    navLocked = true;
+    lastDirection = direction;
+    const exitClass = direction === 'forward' ? 'card-exit-forward' : 'card-exit-back';
+    card.classList.add(exitClass);
+    setTimeout(() => {
+      card.classList.remove(exitClass);
+      mutateStack();
+      render();
+    }, EXIT_DURATION);
+  }
+
+  function renderLanding(node) {
+    card.innerHTML = `
+      ${coverHtml(node.sketch, node.color, node.emoji)}
+      <div class="landing-title">${node.title}</div>
+      <div class="landing-subtitle">${node.subtitle}</div>
+      <div class="landing-actions">
+        <button class="btn-primary" id="startBtn">Start <span aria-hidden="true">→</span></button>
+      </div>
+    `;
+    document.getElementById('startBtn').addEventListener('click', () => {
+      transitionTo(() => stack.push(node.next), 'forward');
+    });
+  }
+
+  function renderQuestion(node) {
+    card.innerHTML = `
+      ${coverHtml(node.sketch, node.color, node.emoji)}
+      <h1>${node.text}</h1>
+      <div class="choices">
+        ${node.options.map((opt, idx) => `
+          <button class="choice" data-idx="${idx}" style="${styleAttr(opt.color)}">
+            <span class="choice-emoji">${opt.emoji}</span>
+            <span class="choice-label">${opt.label}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+    const choiceBtns = card.querySelectorAll('.choice');
+    choiceBtns.forEach(btn => {
+      btn.addEventListener('click', () => selectChoice(node, btn, choiceBtns));
+    });
+  }
+
+  function selectChoice(node, btn, choiceBtns) {
+    if (navLocked) return;
+    navLocked = true;
+    const next = node.options[parseInt(btn.dataset.idx, 10)].next;
+    choiceBtns.forEach(b => b.classList.toggle('choice-dim', b !== btn));
+    btn.classList.add('choice-selected');
+    lastDirection = 'forward';
+    setTimeout(() => {
+      card.classList.add('card-exit-forward');
+      setTimeout(() => {
+        card.classList.remove('card-exit-forward');
+        stack.push(next);
+        render();
+      }, EXIT_DURATION);
+    }, SELECT_DELAY);
+  }
+
+  function renderOutcome(node) {
+    card.innerHTML = `
+      ${coverHtml(node.sketch, node.color, node.emoji)}
+      <div class="outcome-name" id="outcomeName">${node.name}</div>
+      <div class="outcome-blurb" id="outcomeBlurb">${node.blurb}</div>
+      <div class="footer-stack">
+        <button class="btn-primary" id="suggestToggle">Suggest something else <span aria-hidden="true">💡</span></button>
+        <div id="suggestPanel"></div>
+        <div class="secondary-row">
+          <button class="btn-ghost" id="surpriseBtn">Surprise me <span aria-hidden="true">🎲</span></button>
+          <button class="btn-ghost" id="restartBtn">Start over</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      transitionTo(() => { stack.length = 0; stack.push('landing'); }, 'back');
+    });
+    document.getElementById('surpriseBtn').addEventListener('click', spinRandom);
+    document.getElementById('suggestToggle').addEventListener('click', () => openSuggestPanel(node));
+  }
+
+  function openSuggestPanel(node) {
+    const toggle = document.getElementById('suggestToggle');
+    const panel = document.getElementById('suggestPanel');
+    toggle.style.display = 'none';
+    panel.innerHTML = `
+      <form class="suggest-panel" id="suggestForm">
+        <textarea class="suggest-textarea" id="suggestText" placeholder="What did you have in mind?" required></textarea>
+        <button class="btn-primary" type="submit" id="suggestSend">Send suggestion <span aria-hidden="true">💌</span></button>
+        <div class="suggest-status" id="suggestStatus"></div>
+      </form>
+    `;
+    document.getElementById('suggestText').focus();
+    document.getElementById('suggestForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitSuggestion(node);
+    });
+  }
+
+  function submitSuggestion(node) {
+    const textEl = document.getElementById('suggestText');
+    const sendBtn = document.getElementById('suggestSend');
+    const statusEl = document.getElementById('suggestStatus');
+    const message = textEl.value.trim();
+    if (!message) return;
+
+    sendBtn.disabled = true;
+    statusEl.className = 'suggest-status';
+    statusEl.textContent = 'Sending…';
+
+    fetch(SUGGESTION_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ suggestion: message, viewing: node.name })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Request failed');
+        statusEl.className = 'suggest-status success';
+        statusEl.textContent = 'Sent <3';
+        textEl.value = '';
+        textEl.disabled = true;
+        sendBtn.style.display = 'none';
+      })
+      .catch(() => {
+        statusEl.className = 'suggest-status error';
+        statusEl.textContent = "Couldn't send — mind trying again?";
+        sendBtn.disabled = false;
+      });
+  }
+
+  function spinRandom() {
+    const coverEmoji = card.querySelector('.cover-emoji');
+    const cover = card.querySelector('.cover');
+    const nameEl = document.getElementById('outcomeName');
+    const blurbEl = document.getElementById('outcomeBlurb');
+    let ticks = 0;
+    const maxTicks = 10;
+    const interval = setInterval(() => {
+      const pick = RANDOM_POOL[Math.floor(Math.random() * RANDOM_POOL.length)];
+      coverEmoji.textContent = pick.emoji;
+      nameEl.textContent = pick.name;
+      const variant = isDarkMode ? PALETTE[pick.color].dark : PALETTE[pick.color].light;
+      cover.style.setProperty('--c-bg', variant.bg);
+      cover.style.setProperty('--c-text', variant.text);
+      ticks++;
+      if (ticks >= maxTicks) {
+        clearInterval(interval);
+        blurbEl.textContent = pick.blurb;
+        coverEmoji.style.transform = 'scale(1.15)';
+        setTimeout(() => { coverEmoji.style.transform = 'scale(1)'; }, 220);
+      }
+    }, 70);
+  }
+
+  render();
+</script>
+
+</body>
+</html>
