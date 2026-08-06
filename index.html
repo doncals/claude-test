@@ -138,6 +138,7 @@
   .appbar-top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     min-height: 38px;
   }
 
@@ -169,6 +170,32 @@
     width: 16px;
     height: 16px;
     stroke: var(--text);
+  }
+
+  .trail {
+    display: flex;
+    gap: 6px;
+  }
+
+  .trail-badge {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 14px -8px rgba(20,16,8,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background-color 0.4s ease;
+    animation: trailPop 0.32s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes trailPop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
   }
 
   .progress-track {
@@ -219,26 +246,6 @@
     position: relative;
     overflow: hidden;
     touch-action: pan-y;
-    --mx: 50%;
-    --my: 0%;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.55), transparent 55%);
-    opacity: 0.6;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-    z-index: 2;
-    transition: opacity 0.3s ease;
-  }
-
-  html.dark .card::before {
-    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.16), transparent 55%);
-    mix-blend-mode: overlay;
   }
 
   .card.is-landing {
@@ -246,10 +253,8 @@
     border: none;
     box-shadow: none;
     padding: 0;
-  }
-
-  .card.is-landing::before {
-    display: none;
+    border-radius: 0;
+    overflow: visible;
   }
 
   .card.card-exit-forward { transform: scale(0.88) rotate(-5deg) translateY(6px); opacity: 0; }
@@ -343,22 +348,6 @@
     touch-action: manipulation;
     box-shadow: 0 6px 14px -10px rgba(20,16,8,0.22);
     transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease, opacity 0.18s ease;
-    position: relative;
-    overflow: hidden;
-    --mx: 50%;
-    --my: 15%;
-  }
-
-  .choice::after,
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 15%), rgba(255,255,255,0.6), transparent 60%);
-    opacity: 0.55;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
   }
 
   .choice:active { transform: scale(0.93); }
@@ -414,8 +403,8 @@
     width: 100%;
     min-height: 52px;
     border: none;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #ff8a65, #ff6b4a);
+    border-radius: 12px;
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
     color: #fff;
     font-family: inherit;
     font-weight: 700;
@@ -425,13 +414,9 @@
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-    box-shadow: 0 14px 26px -12px rgba(255,107,74,0.55);
+    box-shadow: 0 14px 26px -12px rgba(124,58,237,0.5);
     transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s ease;
     touch-action: manipulation;
-    position: relative;
-    overflow: hidden;
-    --mx: 50%;
-    --my: 15%;
   }
 
   .btn-primary:active { transform: scale(0.97); }
@@ -443,7 +428,7 @@
   .btn-ghost {
     width: 100%;
     min-height: 48px;
-    border-radius: 999px;
+    border-radius: 12px;
     background: var(--ghost-bg);
     color: var(--ghost-text);
     font-family: inherit;
@@ -513,6 +498,14 @@
 
   .landing-actions { margin-top: 4px; }
 
+  .made-by {
+    display: none;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 10px 0 calc(env(safe-area-inset-bottom, 0px) + 14px);
+  }
+
   @media (max-width: 380px) {
     .card { padding: 14px 14px 18px; }
     h1 { font-size: 1.22rem; }
@@ -533,6 +526,7 @@
       <button class="back-btn" id="backBtn" hidden aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
+      <div class="trail" id="trail" aria-hidden="true"></div>
     </div>
     <div class="progress-track" id="progressTrack">
       <div class="progress-fill" id="progressFill"></div>
@@ -542,6 +536,7 @@
   <div class="card-wrap">
     <div class="card" id="card"></div>
   </div>
+  <div class="made-by" id="madeBy">Made by Sarah 🫶</div>
 </main>
 
 <div class="sr-only" id="liveRegion" aria-live="polite"></div>
@@ -549,7 +544,7 @@
 <script>
   const TOTAL_QUESTIONS = 3;
   const SELECT_DELAY = 240;
-  const EXIT_DURATION = 200;
+  const EXIT_DURATION = 220;
   const SWIPE_THRESHOLD = 90;
   const SUGGESTION_ENDPOINT = 'https://formspree.io/f/xvkppeqn';
 
@@ -762,30 +757,17 @@
   const progressTrack = document.getElementById('progressTrack');
   const progressFill = document.getElementById('progressFill');
   const backBtn = document.getElementById('backBtn');
+  const trailEl = document.getElementById('trail');
+  const madeBy = document.getElementById('madeBy');
   const liveRegion = document.getElementById('liveRegion');
 
-  backBtn.addEventListener('click', () => transitionTo(() => stack.pop(), 'back'));
+  let choiceTrail = [];
 
-  function updateSheen(el, clientX, clientY) {
-    const rect = el.getBoundingClientRect();
-    const mx = ((clientX - rect.left) / rect.width) * 100;
-    const my = ((clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty('--mx', mx + '%');
-    el.style.setProperty('--my', my + '%');
+  function renderTrail() {
+    trailEl.innerHTML = choiceTrail.map(emoji => `<span class="trail-badge">${emoji}</span>`).join('');
   }
 
-  let lightRAF = null;
-  function handleLightPointer(e) {
-    const point = e.touches ? e.touches[0] : e;
-    if (lightRAF) return;
-    lightRAF = requestAnimationFrame(() => {
-      lightRAF = null;
-      updateSheen(card, point.clientX, point.clientY);
-      const target = e.target.closest && e.target.closest('.choice, .btn-primary');
-      if (target) updateSheen(target, point.clientX, point.clientY);
-    });
-  }
-  card.addEventListener('pointermove', handleLightPointer);
+  backBtn.addEventListener('click', () => transitionTo(() => { stack.pop(); choiceTrail.pop(); }, 'back'));
 
   let swipeState = null;
 
@@ -794,7 +776,7 @@
     if (node.type !== 'question' || navLocked) return;
     const choiceBtns = card.querySelectorAll('.choice');
     if (choiceBtns.length !== 2) return;
-    swipeState = { startX: e.clientX, startY: e.clientY, dx: 0, node, choiceBtns, pointerId: e.pointerId };
+    swipeState = { startX: e.clientX, startY: e.clientY, dx: 0, armed: false, node, choiceBtns, pointerId: e.pointerId };
     card.style.transition = 'none';
   }
 
@@ -808,22 +790,35 @@
     card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
     const [leftBtn, rightBtn] = swipeState.choiceBtns;
     const progress = Math.min(Math.abs(dx) / SWIPE_THRESHOLD, 1);
+    const armed = Math.abs(dx) >= SWIPE_THRESHOLD;
     if (dx > 4) {
       rightBtn.style.transform = `scale(${1 + progress * 0.08})`;
       rightBtn.style.opacity = '1';
+      rightBtn.classList.toggle('choice-selected', armed);
       leftBtn.style.opacity = String(1 - progress * 0.55);
       leftBtn.style.transform = '';
+      leftBtn.classList.remove('choice-selected');
     } else if (dx < -4) {
       leftBtn.style.transform = `scale(${1 + progress * 0.08})`;
       leftBtn.style.opacity = '1';
+      leftBtn.classList.toggle('choice-selected', armed);
       rightBtn.style.opacity = String(1 - progress * 0.55);
       rightBtn.style.transform = '';
+      rightBtn.classList.remove('choice-selected');
     }
+    if (armed && !swipeState.armed && navigator.vibrate) {
+      navigator.vibrate(12);
+    }
+    swipeState.armed = armed;
   }
 
   function resetSwipeStyles(choiceBtns) {
     card.style.transform = '';
-    choiceBtns.forEach(b => { b.style.opacity = ''; b.style.transform = ''; });
+    choiceBtns.forEach(b => {
+      b.style.opacity = '';
+      b.style.transform = '';
+      b.classList.remove('choice-selected');
+    });
   }
 
   function onCardPointerUp(e) {
@@ -834,6 +829,7 @@
     if (Math.abs(dx) > SWIPE_THRESHOLD) {
       card.style.transform = '';
       const [leftBtn, rightBtn] = choiceBtns;
+      choiceBtns.forEach(b => { b.style.opacity = ''; b.style.transform = ''; b.classList.remove('choice-selected'); });
       selectChoice(node, dx > 0 ? rightBtn : leftBtn, choiceBtns);
     } else {
       resetSwipeStyles(choiceBtns);
@@ -860,12 +856,14 @@
   }
 
   function updateChrome(node) {
+    madeBy.style.display = node.type === 'outcome' ? 'block' : 'none';
     if (node.type === 'landing') {
       appbar.style.visibility = 'hidden';
       return;
     }
     appbar.style.visibility = 'visible';
     backBtn.hidden = stack.length <= 1;
+    renderTrail();
     const depth = node.type === 'outcome' ? TOTAL_QUESTIONS : node.depth;
     const pct = (depth / TOTAL_QUESTIONS) * 100;
     const palette = PALETTE[node.color] || PALETTE.peach;
@@ -913,6 +911,9 @@
     const nodeId = stack[stack.length - 1];
     const node = TREE[nodeId];
     navLocked = false;
+    card.classList.remove('card-exit-forward', 'card-exit-back');
+    card.style.transform = '';
+    card.style.transition = '';
     setTheme(node.branch === 'night');
     card.classList.toggle('is-landing', node.type === 'landing');
     if (node.type === 'landing') renderLanding(node);
@@ -925,9 +926,7 @@
     card.classList.add(lastDirection === 'forward' ? 'anim-forward' : 'anim-back');
   }
 
-  function transitionTo(mutateStack, direction) {
-    if (navLocked) return;
-    navLocked = true;
+  function doTransition(mutateStack, direction) {
     lastDirection = direction;
     const exitClass = direction === 'forward' ? 'card-exit-forward' : 'card-exit-back';
     card.classList.add(exitClass);
@@ -936,6 +935,12 @@
       mutateStack();
       render();
     }, EXIT_DURATION);
+  }
+
+  function transitionTo(mutateStack, direction) {
+    if (navLocked) return;
+    navLocked = true;
+    doTransition(mutateStack, direction);
   }
 
   function renderLanding(node) {
@@ -974,17 +979,15 @@
   function selectChoice(node, btn, choiceBtns) {
     if (navLocked) return;
     navLocked = true;
-    const next = node.options[parseInt(btn.dataset.idx, 10)].next;
-    choiceBtns.forEach(b => b.classList.toggle('choice-dim', b !== btn));
+    const opt = node.options[parseInt(btn.dataset.idx, 10)];
+    choiceBtns.forEach(b => {
+      b.style.opacity = '';
+      b.style.transform = '';
+      b.classList.toggle('choice-dim', b !== btn);
+    });
     btn.classList.add('choice-selected');
-    lastDirection = 'forward';
     setTimeout(() => {
-      card.classList.add('card-exit-forward');
-      setTimeout(() => {
-        card.classList.remove('card-exit-forward');
-        stack.push(next);
-        render();
-      }, EXIT_DURATION);
+      doTransition(() => { stack.push(opt.next); choiceTrail.push(opt.emoji); }, 'forward');
     }, SELECT_DELAY);
   }
 
@@ -998,12 +1001,12 @@
         <div id="suggestPanel"></div>
         <div class="secondary-row">
           <button class="btn-ghost" id="surpriseBtn">Surprise me <span aria-hidden="true">🎲</span></button>
-          <button class="btn-ghost" id="restartBtn">Start over</button>
+          <button class="btn-ghost" id="restartBtn">Start over <span aria-hidden="true">🔄</span></button>
         </div>
       </div>
     `;
     document.getElementById('restartBtn').addEventListener('click', () => {
-      transitionTo(() => { stack.length = 0; stack.push('landing'); }, 'back');
+      transitionTo(() => { stack.length = 0; stack.push('landing'); choiceTrail.length = 0; }, 'back');
     });
     document.getElementById('surpriseBtn').addEventListener('click', spinRandom);
     document.getElementById('suggestToggle').addEventListener('click', () => openSuggestPanel(node));
