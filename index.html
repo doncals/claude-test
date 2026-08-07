@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:title" content="Let's Plan Our Date">
 <meta property="og:description" content="Three quick questions and I'll take it from there.">
-<title>Let's Plan Our Date</title>
+<title>debandsarahdates.com</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -260,8 +260,8 @@
   .card.card-exit-forward { transform: scale(0.88) rotate(-5deg) translateY(6px); opacity: 0; }
   .card.card-exit-back { transform: scale(0.88) rotate(5deg) translateY(6px); opacity: 0; }
 
-  .card.anim-forward { animation: cardInForward 0.46s cubic-bezier(.22,1.36,.36,1); }
-  .card.anim-back { animation: cardInBack 0.46s cubic-bezier(.22,1.36,.36,1); }
+  .card.anim-forward { animation: cardInForward 0.32s cubic-bezier(.22,1,.36,1) both; }
+  .card.anim-back { animation: cardInBack 0.32s cubic-bezier(.22,1,.36,1) both; }
 
   @keyframes cardInForward {
     from { opacity: 0; transform: scale(0.9) rotate(4deg) translateY(18px); }
@@ -294,25 +294,7 @@
     transition: transform 0.4s cubic-bezier(.22,1.4,.36,1);
   }
 
-  .cover-hint {
-    position: absolute;
-    bottom: 10px;
-    right: 12px;
-    font-size: 0.64rem;
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    color: var(--c-text, #6b6558);
-    background: rgba(255,255,255,0.65);
-    padding: 3px 9px;
-    border-radius: 999px;
-    opacity: 0.7;
-  }
-
-  html.dark .cover-hint {
-    background: rgba(0,0,0,0.4);
-  }
-
-  .cover.has-sketch .cover-emoji,
-  .cover.has-sketch .cover-hint {
+  .cover.has-sketch .cover-emoji {
     display: none;
   }
 
@@ -464,7 +446,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    animation: cardInForward 0.32s cubic-bezier(.22,1.36,.36,1);
+    animation: cardInForward 0.28s cubic-bezier(.22,1,.36,1) both;
   }
 
   .suggest-textarea {
@@ -483,7 +465,7 @@
 
   .suggest-textarea:focus {
     outline: none;
-    border-color: var(--c-accent, #ff7a45);
+    border-color: #7c3aed;
   }
 
   .suggest-status {
@@ -574,21 +556,21 @@
   const TREE = {
     landing: {
       type: 'landing',
-      title: "Let's plan our date.",
-      subtitle: "Three quick questions — I'll take it from there.",
+      title: "Wanna go on a date?",
+      subtitle: "Hi Deb!! I had fun getting to know you the other night. I made a little quiz if you'd like to hangout again",
       sketch: 'sketches/landing',
       color: 'peach',
-      emoji: '💌',
+      emoji: '🫶',
       next: 'day_or_night'
     },
     day_or_night: {
       type: 'question',
       depth: 1,
       branch: null,
-      text: 'Day, or night?',
+      text: 'When should we see each other?',
       sketch: 'sketches/day-or-night',
       color: 'amber',
-      emoji: '🌗',
+      emoji: '⏰',
       options: [
         { label: 'Day', emoji: '☀️', color: 'amber', next: 'indoor_or_outdoor' },
         { label: 'Night', emoji: '🌙', color: 'lilac', next: 'drinks_or_dinner' }
@@ -598,10 +580,10 @@
       type: 'question',
       depth: 2,
       branch: 'day',
-      text: 'Indoor, or outdoor?',
+      text: 'Spend some time indoors or outside?',
       sketch: 'sketches/indoor-or-outdoor',
       color: 'mint',
-      emoji: '🏡',
+      emoji: '🌇',
       options: [
         { label: 'Indoor', emoji: '🛋️', color: 'peach', next: 'go_out_or_in' },
         { label: 'Outdoor', emoji: '🌳', color: 'mint', next: 'moving_or_hanging' }
@@ -611,10 +593,10 @@
       type: 'question',
       depth: 2,
       branch: 'night',
-      text: 'Drinks, or dinner?',
+      text: 'Grab drinks or dinner?',
       sketch: 'sketches/drinks-or-dinner',
       color: 'blush',
-      emoji: '🍽️',
+      emoji: '🍹',
       options: [
         { label: 'Drinks', emoji: '🍸', color: 'blush', next: 'pool_or_watch' },
         { label: 'Dinner', emoji: '🍽️', color: 'sky', next: 'sf_or_france' }
@@ -624,10 +606,10 @@
       type: 'question',
       depth: 3,
       branch: 'day',
-      text: 'Go out, or stay in?',
+      text: 'Go out or stay in?',
       sketch: 'sketches/go-out-or-in',
       color: 'peach',
-      emoji: '🚪',
+      emoji: '⛅️',
       options: [
         { label: 'Out', emoji: '🪩', color: 'peach', next: 'outcome_coffee' },
         { label: 'In', emoji: '🏡', color: 'amber', next: 'outcome_vinyl' }
@@ -637,10 +619,10 @@
       type: 'question',
       depth: 3,
       branch: 'day',
-      text: 'Moving, or hanging out?',
+      text: 'Adventure out or chill together?',
       sketch: 'sketches/moving-or-hanging',
       color: 'mint',
-      emoji: '🥾',
+      emoji: '⛰️',
       options: [
         { label: 'Moving', emoji: '🥾', color: 'mint', next: 'outcome_lands_end' },
         { label: 'Hanging out', emoji: '🧺', color: 'teal', next: 'outcome_mt_tam' }
@@ -650,10 +632,10 @@
       type: 'question',
       depth: 3,
       branch: 'night',
-      text: "People-watch, or let me beat you at pool?",
+      text: "People watch or I beat you at pool?",
       sketch: 'sketches/pool-or-watch',
       color: 'sky',
-      emoji: '🎱',
+      emoji: '🍻',
       options: [
         { label: 'People watch', emoji: '👀', color: 'lilac', next: 'outcome_trick_dog' },
         { label: 'Pool', emoji: '🎱', color: 'sky', next: 'outcome_peacekeeper' }
@@ -663,10 +645,10 @@
       type: 'question',
       depth: 3,
       branch: 'night',
-      text: "SF classic, or pretend we're in France?",
+      text: "A San Francisco classic or pretend we're in Paris?",
       sketch: 'sketches/sf-or-france',
       color: 'lilac',
-      emoji: '🗼',
+      emoji: '🍲',
       options: [
         { label: 'San Francisco', emoji: '🌉', color: 'blush', next: 'outcome_side_a' },
         { label: 'France', emoji: '🇫🇷', color: 'sky', next: 'outcome_verjus' }
@@ -675,44 +657,44 @@
     outcome_coffee: {
       type: 'outcome',
       branch: 'day',
-      name: 'Coffee at Loquat',
-      blurb: 'A quiet cup, unhurried mornings, and no reason to rush.',
+      name: 'Coffee @ Loquat',
+      blurb: 'Really lovely coffee and pastries.',
       sketch: 'sketches/outcome-coffee',
       color: 'peach',
-      emoji: '☕'
+      emoji: '☕️'
     },
     outcome_vinyl: {
       type: 'outcome',
       branch: 'day',
-      name: 'Vinyl at Home',
-      blurb: 'Just us, a record spinning, and the whole day open.',
+      name: 'Listen to vinyls @ home',
+      blurb: 'I promise I have a good collection.',
       sketch: 'sketches/outcome-vinyl',
       color: 'amber',
-      emoji: '🎵'
+      emoji: '🔊'
     },
     outcome_lands_end: {
       type: 'outcome',
       branch: 'day',
-      name: 'Walk at Lands End',
-      blurb: 'Cliffs, ocean air, and a trail that makes conversation easy.',
+      name: 'Walk @ Lands End',
+      blurb: 'You should see the better side of the GGB :)',
       sketch: 'sketches/outcome-lands-end',
       color: 'mint',
-      emoji: '🌊'
+      emoji: '🥾'
     },
     outcome_mt_tam: {
       type: 'outcome',
       branch: 'day',
-      name: 'Picnic at Mt Tam',
-      blurb: 'A blanket, a view, and the kind of talk that goes further than planned.',
+      name: 'Picnic @ Mt. Tam',
+      blurb: 'We can overshare while looking at one of the best views of the city.',
       sketch: 'sketches/outcome-mt-tam',
       color: 'teal',
-      emoji: '🏔️'
+      emoji: '⛰️'
     },
     outcome_peacekeeper: {
       type: 'outcome',
       branch: 'night',
-      name: 'Pool at Peacekeeper',
-      blurb: "Drinks, a little competition, and I probably won't go easy on you.",
+      name: 'Pool @ Peacekeeper',
+      blurb: "I'm not going to go easy on you 😌",
       sketch: 'sketches/outcome-peacekeeper',
       color: 'sky',
       emoji: '🎱'
@@ -720,17 +702,17 @@
     outcome_trick_dog: {
       type: 'outcome',
       branch: 'night',
-      name: 'People-Watching at Trick Dog',
-      blurb: 'A good seat, a good drink, and plenty to notice together.',
+      name: 'People watch @ Trick Dog',
+      blurb: 'Sit in the loft and make up stories about the people below.',
       sketch: 'sketches/outcome-trick-dog',
       color: 'lilac',
-      emoji: '👀'
+      emoji: '🍻'
     },
     outcome_side_a: {
       type: 'outcome',
       branch: 'night',
-      name: 'Drinks & Music at Side A',
-      blurb: 'Classic SF energy — drinks, music, and a night that finds its own rhythm.',
+      name: 'Dinner and music @ Side A',
+      blurb: 'Very solid food and vinyl DJs.',
       sketch: 'sketches/outcome-side-a',
       color: 'blush',
       emoji: '🎶'
@@ -738,11 +720,11 @@
     outcome_verjus: {
       type: 'outcome',
       branch: 'night',
-      name: 'Dinner at Verjus',
-      blurb: "Wine, a long table, and pretending — just for the night — that we're somewhere else.",
+      name: 'Dinner @ Verjus',
+      blurb: 'We might be 5,000 miles from France but you would never know.',
       sketch: 'sketches/outcome-verjus',
       color: 'sky',
-      emoji: '🍷'
+      emoji: '🥖'
     }
   };
 
@@ -892,11 +874,9 @@
   }
 
   function coverHtml(sketch, color, emoji) {
-    const filename = sketch.split('/').pop();
     return `
       <div class="cover" data-sketch="${sketch}" style="${styleAttr(color)}">
         <div class="cover-emoji">${emoji}</div>
-        <span class="cover-hint">${filename}.png</span>
       </div>
     `;
   }
